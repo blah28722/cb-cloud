@@ -1,0 +1,31 @@
+spin_manifest_version = 2
+
+[application]
+name = "cb-cloud"
+version = "0.1.0"
+authors = ["John Chen <john.hk.chen@gmail.com>"]
+description = "REST Backend"
+
+[[trigger.http]]
+route = "/xkcd/..."
+component = "api-xkcd"
+
+[component.api-xkcd]
+source = "api_xkcd/target/wasm32-wasi/release/api_xkcd.wasm"
+allowed_outbound_hosts = ["https://xkcd.com/"]
+[component.api-xkcd.build]
+command = "cargo build --target wasm32-wasi --release"
+workdir = "api_xkcd"
+watch = ["src/**/*.rs", "Cargo.toml"]
+
+[[trigger.http]]
+route = "/rest/..."
+component = "htmx-sandbox"
+
+[component.htmx-sandbox]
+source = "htmx-sandbox/target/wasm32-wasi/release/htmx_sandbox.wasm"
+allowed_outbound_hosts = []
+[component.htmx-sandbox.build]
+command = "cargo build --target wasm32-wasi --release"
+workdir = "htmx-sandbox"
+watch = ["src/**/*.rs", "Cargo.toml"]
